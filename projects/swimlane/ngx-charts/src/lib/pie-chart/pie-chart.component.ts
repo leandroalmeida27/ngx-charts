@@ -70,6 +70,7 @@ export class PieChartComponent extends BaseChartComponent {
   @Input() arcWidth: number = 0.25;
   @Input() gradient: boolean;
   @Input() activeEntries: any[] = [];
+  @Input() innerRadius: number | undefined;
   @Input() tooltipDisabled: boolean = false;
   @Input() labelFormatting: any;
   @Input() trimLabels: boolean = true;
@@ -86,7 +87,6 @@ export class PieChartComponent extends BaseChartComponent {
 
   translation: string;
   outerRadius: number;
-  innerRadius: number;
   data: DataItem[];
   colors: ColorHelper;
   domain: string[];
@@ -127,10 +127,14 @@ export class PieChartComponent extends BaseChartComponent {
     } else {
       this.outerRadius /= 2;
     }
-    this.innerRadius = 0;
-    if (this.doughnut) {
-      this.innerRadius = this.outerRadius * (1 - this.arcWidth);
+    if (this.innerRadius == null) {
+      this.innerRadius = this.doughnut
+        ? this.outerRadius * (1 - this.arcWidth)
+        : 0;
+        console.log('📊 ngx-charts: usando versão local com innerRadius:', this.innerRadius);
+
     }
+
 
     this.domain = this.getDomain();
 
@@ -146,6 +150,7 @@ export class PieChartComponent extends BaseChartComponent {
   getDomain(): string[] {
     return this.results.map(d => d.label);
   }
+  
 
   onClick(data: DataItem | string): void {
     this.select.emit(data);
